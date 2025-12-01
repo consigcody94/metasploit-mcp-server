@@ -4,7 +4,7 @@
 # =============================================================================
 # Build Stage
 # =============================================================================
-FROM python:3.12-slim as builder
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install dependencies
-COPY pyproject.toml .
+COPY pyproject.toml README.md ./
 COPY src/ src/
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir .
@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # =============================================================================
 # Production Stage
 # =============================================================================
-FROM python:3.12-slim as production
+FROM python:3.12-slim AS production
 
 LABEL maintainer="Security Research Team"
 LABEL description="Metasploit MCP Server - AI Agent Integration for Penetration Testing"
@@ -68,7 +68,7 @@ CMD ["serve"]
 # =============================================================================
 # Development Stage
 # =============================================================================
-FROM production as development
+FROM production AS development
 
 USER root
 
