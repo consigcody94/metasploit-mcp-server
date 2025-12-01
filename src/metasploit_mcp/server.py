@@ -79,484 +79,567 @@ class MetasploitMCPServer:
             tools = []
 
             # Core tools
-            tools.append(Tool(
-                name="msf_version",
-                description="Get Metasploit Framework version and system information",
-                inputSchema={
-                    "type": "object",
-                    "properties": {},
-                    "required": [],
-                },
-            ))
-
-            tools.append(Tool(
-                name="msf_module_stats",
-                description="Get statistics about available modules (exploits, auxiliary, post, payloads, etc.)",
-                inputSchema={
-                    "type": "object",
-                    "properties": {},
-                    "required": [],
-                },
-            ))
-
-            # Module discovery tools
-            tools.append(Tool(
-                name="msf_search",
-                description="Search for Metasploit modules by keyword, CVE, platform, or other criteria",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "string",
-                            "description": "Search query (e.g., 'cve:2021-44228', 'type:exploit platform:windows', 'apache')",
-                        },
-                    },
-                    "required": ["query"],
-                },
-            ))
-
-            tools.append(Tool(
-                name="msf_module_info",
-                description="Get detailed information about a specific module",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "module_type": {
-                            "type": "string",
-                            "enum": ["exploit", "auxiliary", "post", "payload", "encoder", "nop", "evasion"],
-                            "description": "Type of module",
-                        },
-                        "module_name": {
-                            "type": "string",
-                            "description": "Full module name (e.g., 'windows/smb/ms17_010_eternalblue')",
-                        },
-                    },
-                    "required": ["module_type", "module_name"],
-                },
-            ))
-
-            tools.append(Tool(
-                name="msf_module_options",
-                description="Get configurable options for a module",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "module_type": {
-                            "type": "string",
-                            "enum": ["exploit", "auxiliary", "post", "payload", "encoder", "nop", "evasion"],
-                            "description": "Type of module",
-                        },
-                        "module_name": {
-                            "type": "string",
-                            "description": "Full module name",
-                        },
-                    },
-                    "required": ["module_type", "module_name"],
-                },
-            ))
-
-            tools.append(Tool(
-                name="msf_compatible_payloads",
-                description="Get list of payloads compatible with an exploit",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "exploit_name": {
-                            "type": "string",
-                            "description": "Full exploit name",
-                        },
-                    },
-                    "required": ["exploit_name"],
-                },
-            ))
-
-            # Module listing tools
-            for mod_type in ["exploits", "auxiliary", "post", "payloads", "encoders", "nops", "evasion"]:
-                tools.append(Tool(
-                    name=f"msf_list_{mod_type}",
-                    description=f"List all available {mod_type} modules",
+            tools.append(
+                Tool(
+                    name="msf_version",
+                    description="Get Metasploit Framework version and system information",
                     inputSchema={
                         "type": "object",
                         "properties": {},
                         "required": [],
                     },
-                ))
+                )
+            )
 
-            # Exploit execution tools
-            if self.settings.enable_exploit_tools:
-                tools.append(Tool(
-                    name="msf_check",
-                    description="Check if a target is vulnerable without exploitation (safe reconnaissance)",
+            tools.append(
+                Tool(
+                    name="msf_module_stats",
+                    description="Get statistics about available modules (exploits, auxiliary, post, payloads, etc.)",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {},
+                        "required": [],
+                    },
+                )
+            )
+
+            # Module discovery tools
+            tools.append(
+                Tool(
+                    name="msf_search",
+                    description="Search for Metasploit modules by keyword, CVE, platform, or other criteria",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "query": {
+                                "type": "string",
+                                "description": "Search query (e.g., 'cve:2021-44228', 'type:exploit platform:windows', 'apache')",
+                            },
+                        },
+                        "required": ["query"],
+                    },
+                )
+            )
+
+            tools.append(
+                Tool(
+                    name="msf_module_info",
+                    description="Get detailed information about a specific module",
                     inputSchema={
                         "type": "object",
                         "properties": {
                             "module_type": {
                                 "type": "string",
-                                "enum": ["exploit", "auxiliary"],
+                                "enum": [
+                                    "exploit",
+                                    "auxiliary",
+                                    "post",
+                                    "payload",
+                                    "encoder",
+                                    "nop",
+                                    "evasion",
+                                ],
+                                "description": "Type of module",
+                            },
+                            "module_name": {
+                                "type": "string",
+                                "description": "Full module name (e.g., 'windows/smb/ms17_010_eternalblue')",
+                            },
+                        },
+                        "required": ["module_type", "module_name"],
+                    },
+                )
+            )
+
+            tools.append(
+                Tool(
+                    name="msf_module_options",
+                    description="Get configurable options for a module",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "module_type": {
+                                "type": "string",
+                                "enum": [
+                                    "exploit",
+                                    "auxiliary",
+                                    "post",
+                                    "payload",
+                                    "encoder",
+                                    "nop",
+                                    "evasion",
+                                ],
                                 "description": "Type of module",
                             },
                             "module_name": {
                                 "type": "string",
                                 "description": "Full module name",
                             },
-                            "options": {
-                                "type": "object",
-                                "description": "Module options (RHOSTS, RPORT, etc.)",
-                                "additionalProperties": True,
-                            },
                         },
-                        "required": ["module_type", "module_name", "options"],
+                        "required": ["module_type", "module_name"],
                     },
-                ))
+                )
+            )
 
-                tools.append(Tool(
-                    name="msf_execute",
-                    description="Execute a Metasploit module (exploit, auxiliary, or post). REQUIRES AUTHORIZATION.",
+            tools.append(
+                Tool(
+                    name="msf_compatible_payloads",
+                    description="Get list of payloads compatible with an exploit",
                     inputSchema={
                         "type": "object",
                         "properties": {
-                            "module_type": {
+                            "exploit_name": {
                                 "type": "string",
-                                "enum": ["exploit", "auxiliary", "post"],
-                                "description": "Type of module to execute",
-                            },
-                            "module_name": {
-                                "type": "string",
-                                "description": "Full module name",
-                            },
-                            "options": {
-                                "type": "object",
-                                "description": "Module options including RHOSTS, RPORT, PAYLOAD, etc.",
-                                "additionalProperties": True,
+                                "description": "Full exploit name",
                             },
                         },
-                        "required": ["module_type", "module_name", "options"],
+                        "required": ["exploit_name"],
                     },
-                ))
+                )
+            )
+
+            # Module listing tools
+            for mod_type in [
+                "exploits",
+                "auxiliary",
+                "post",
+                "payloads",
+                "encoders",
+                "nops",
+                "evasion",
+            ]:
+                tools.append(
+                    Tool(
+                        name=f"msf_list_{mod_type}",
+                        description=f"List all available {mod_type} modules",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
+                        },
+                    )
+                )
+
+            # Exploit execution tools
+            if self.settings.enable_exploit_tools:
+                tools.append(
+                    Tool(
+                        name="msf_check",
+                        description="Check if a target is vulnerable without exploitation (safe reconnaissance)",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "module_type": {
+                                    "type": "string",
+                                    "enum": ["exploit", "auxiliary"],
+                                    "description": "Type of module",
+                                },
+                                "module_name": {
+                                    "type": "string",
+                                    "description": "Full module name",
+                                },
+                                "options": {
+                                    "type": "object",
+                                    "description": "Module options (RHOSTS, RPORT, etc.)",
+                                    "additionalProperties": True,
+                                },
+                            },
+                            "required": ["module_type", "module_name", "options"],
+                        },
+                    )
+                )
+
+                tools.append(
+                    Tool(
+                        name="msf_execute",
+                        description="Execute a Metasploit module (exploit, auxiliary, or post). REQUIRES AUTHORIZATION.",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "module_type": {
+                                    "type": "string",
+                                    "enum": ["exploit", "auxiliary", "post"],
+                                    "description": "Type of module to execute",
+                                },
+                                "module_name": {
+                                    "type": "string",
+                                    "description": "Full module name",
+                                },
+                                "options": {
+                                    "type": "object",
+                                    "description": "Module options including RHOSTS, RPORT, PAYLOAD, etc.",
+                                    "additionalProperties": True,
+                                },
+                            },
+                            "required": ["module_type", "module_name", "options"],
+                        },
+                    )
+                )
 
             # Session management tools
             if self.settings.enable_session_tools:
-                tools.append(Tool(
-                    name="msf_sessions_list",
-                    description="List all active sessions (shells, meterpreter)",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {},
-                        "required": [],
-                    },
-                ))
-
-                tools.append(Tool(
-                    name="msf_session_info",
-                    description="Get detailed information about a specific session",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "session_id": {
-                                "type": "integer",
-                                "description": "Session ID",
-                            },
+                tools.append(
+                    Tool(
+                        name="msf_sessions_list",
+                        description="List all active sessions (shells, meterpreter)",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
                         },
-                        "required": ["session_id"],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_session_run",
-                    description="Run a command in a session (shell or meterpreter)",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "session_id": {
-                                "type": "integer",
-                                "description": "Session ID",
+                tools.append(
+                    Tool(
+                        name="msf_session_info",
+                        description="Get detailed information about a specific session",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "session_id": {
+                                    "type": "integer",
+                                    "description": "Session ID",
+                                },
                             },
-                            "command": {
-                                "type": "string",
-                                "description": "Command to execute",
-                            },
+                            "required": ["session_id"],
                         },
-                        "required": ["session_id", "command"],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_session_stop",
-                    description="Terminate a session",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "session_id": {
-                                "type": "integer",
-                                "description": "Session ID to terminate",
+                tools.append(
+                    Tool(
+                        name="msf_session_run",
+                        description="Run a command in a session (shell or meterpreter)",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "session_id": {
+                                    "type": "integer",
+                                    "description": "Session ID",
+                                },
+                                "command": {
+                                    "type": "string",
+                                    "description": "Command to execute",
+                                },
                             },
+                            "required": ["session_id", "command"],
                         },
-                        "required": ["session_id"],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_session_upgrade",
-                    description="Upgrade a shell session to Meterpreter",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "session_id": {
-                                "type": "integer",
-                                "description": "Shell session ID to upgrade",
+                tools.append(
+                    Tool(
+                        name="msf_session_stop",
+                        description="Terminate a session",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "session_id": {
+                                    "type": "integer",
+                                    "description": "Session ID to terminate",
+                                },
                             },
-                            "lhost": {
-                                "type": "string",
-                                "description": "Local host for Meterpreter connection",
-                            },
-                            "lport": {
-                                "type": "integer",
-                                "description": "Local port for Meterpreter connection",
-                            },
+                            "required": ["session_id"],
                         },
-                        "required": ["session_id", "lhost", "lport"],
-                    },
-                ))
+                    )
+                )
+
+                tools.append(
+                    Tool(
+                        name="msf_session_upgrade",
+                        description="Upgrade a shell session to Meterpreter",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "session_id": {
+                                    "type": "integer",
+                                    "description": "Shell session ID to upgrade",
+                                },
+                                "lhost": {
+                                    "type": "string",
+                                    "description": "Local host for Meterpreter connection",
+                                },
+                                "lport": {
+                                    "type": "integer",
+                                    "description": "Local port for Meterpreter connection",
+                                },
+                            },
+                            "required": ["session_id", "lhost", "lport"],
+                        },
+                    )
+                )
 
             # Post-exploitation tools
             if self.settings.enable_post_tools:
-                tools.append(Tool(
-                    name="msf_session_compatible_modules",
-                    description="Get post-exploitation modules compatible with a session",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "session_id": {
-                                "type": "integer",
-                                "description": "Session ID",
+                tools.append(
+                    Tool(
+                        name="msf_session_compatible_modules",
+                        description="Get post-exploitation modules compatible with a session",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "session_id": {
+                                    "type": "integer",
+                                    "description": "Session ID",
+                                },
                             },
+                            "required": ["session_id"],
                         },
-                        "required": ["session_id"],
-                    },
-                ))
+                    )
+                )
 
             # Payload generation tools
             if self.settings.enable_payload_tools:
-                tools.append(Tool(
-                    name="msf_encode_payload",
-                    description="Encode a payload with specified encoder",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "data": {
-                                "type": "string",
-                                "description": "Raw payload data (base64 encoded)",
+                tools.append(
+                    Tool(
+                        name="msf_encode_payload",
+                        description="Encode a payload with specified encoder",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "string",
+                                    "description": "Raw payload data (base64 encoded)",
+                                },
+                                "encoder": {
+                                    "type": "string",
+                                    "description": "Encoder module name",
+                                },
+                                "options": {
+                                    "type": "object",
+                                    "description": "Encoder options",
+                                    "additionalProperties": True,
+                                },
                             },
-                            "encoder": {
-                                "type": "string",
-                                "description": "Encoder module name",
-                            },
-                            "options": {
-                                "type": "object",
-                                "description": "Encoder options",
-                                "additionalProperties": True,
-                            },
+                            "required": ["data", "encoder"],
                         },
-                        "required": ["data", "encoder"],
-                    },
-                ))
+                    )
+                )
 
             # Database tools
             if self.settings.enable_db_tools:
-                tools.append(Tool(
-                    name="msf_db_status",
-                    description="Get database connection status",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {},
-                        "required": [],
-                    },
-                ))
-
-                tools.append(Tool(
-                    name="msf_workspaces",
-                    description="List or manage workspaces",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "action": {
-                                "type": "string",
-                                "enum": ["list", "current", "set", "add", "delete"],
-                                "description": "Action to perform",
-                            },
-                            "workspace": {
-                                "type": "string",
-                                "description": "Workspace name (for set/add/delete)",
-                            },
+                tools.append(
+                    Tool(
+                        name="msf_db_status",
+                        description="Get database connection status",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {},
+                            "required": [],
                         },
-                        "required": ["action"],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_hosts",
-                    description="List or manage hosts in database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "action": {
-                                "type": "string",
-                                "enum": ["list", "get", "add", "delete"],
-                                "description": "Action to perform",
+                tools.append(
+                    Tool(
+                        name="msf_workspaces",
+                        description="List or manage workspaces",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "action": {
+                                    "type": "string",
+                                    "enum": ["list", "current", "set", "add", "delete"],
+                                    "description": "Action to perform",
+                                },
+                                "workspace": {
+                                    "type": "string",
+                                    "description": "Workspace name (for set/add/delete)",
+                                },
                             },
-                            "address": {
-                                "type": "string",
-                                "description": "Host address",
-                            },
-                            "host_data": {
-                                "type": "object",
-                                "description": "Host data for add action",
-                                "additionalProperties": True,
-                            },
+                            "required": ["action"],
                         },
-                        "required": ["action"],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_services",
-                    description="List services in database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "host": {
-                                "type": "string",
-                                "description": "Filter by host address",
+                tools.append(
+                    Tool(
+                        name="msf_hosts",
+                        description="List or manage hosts in database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "action": {
+                                    "type": "string",
+                                    "enum": ["list", "get", "add", "delete"],
+                                    "description": "Action to perform",
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "description": "Host address",
+                                },
+                                "host_data": {
+                                    "type": "object",
+                                    "description": "Host data for add action",
+                                    "additionalProperties": True,
+                                },
                             },
-                            "port": {
-                                "type": "integer",
-                                "description": "Filter by port",
-                            },
-                            "proto": {
-                                "type": "string",
-                                "enum": ["tcp", "udp"],
-                                "description": "Filter by protocol",
-                            },
+                            "required": ["action"],
                         },
-                        "required": [],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_vulns",
-                    description="List vulnerabilities in database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "host": {
-                                "type": "string",
-                                "description": "Filter by host address",
+                tools.append(
+                    Tool(
+                        name="msf_services",
+                        description="List services in database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string",
+                                    "description": "Filter by host address",
+                                },
+                                "port": {
+                                    "type": "integer",
+                                    "description": "Filter by port",
+                                },
+                                "proto": {
+                                    "type": "string",
+                                    "enum": ["tcp", "udp"],
+                                    "description": "Filter by protocol",
+                                },
                             },
+                            "required": [],
                         },
-                        "required": [],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_creds",
-                    description="List credentials in database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "workspace": {
-                                "type": "string",
-                                "description": "Workspace to query",
+                tools.append(
+                    Tool(
+                        name="msf_vulns",
+                        description="List vulnerabilities in database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string",
+                                    "description": "Filter by host address",
+                                },
                             },
+                            "required": [],
                         },
-                        "required": [],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_loots",
-                    description="List captured loot in database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "host": {
-                                "type": "string",
-                                "description": "Filter by host",
+                tools.append(
+                    Tool(
+                        name="msf_creds",
+                        description="List credentials in database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "workspace": {
+                                    "type": "string",
+                                    "description": "Workspace to query",
+                                },
                             },
+                            "required": [],
                         },
-                        "required": [],
-                    },
-                ))
+                    )
+                )
 
-                tools.append(Tool(
-                    name="msf_import_scan",
-                    description="Import scan results (Nmap, Nessus, etc.) into database",
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "data": {
-                                "type": "string",
-                                "description": "Scan data (XML format)",
+                tools.append(
+                    Tool(
+                        name="msf_loots",
+                        description="List captured loot in database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "host": {
+                                    "type": "string",
+                                    "description": "Filter by host",
+                                },
                             },
-                            "data_type": {
-                                "type": "string",
-                                "enum": ["nmap_xml", "nessus_xml", "nexpose_simple", "qualys_scan"],
-                                "description": "Type of scan data",
-                            },
+                            "required": [],
                         },
-                        "required": ["data", "data_type"],
-                    },
-                ))
+                    )
+                )
+
+                tools.append(
+                    Tool(
+                        name="msf_import_scan",
+                        description="Import scan results (Nmap, Nessus, etc.) into database",
+                        inputSchema={
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "string",
+                                    "description": "Scan data (XML format)",
+                                },
+                                "data_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "nmap_xml",
+                                        "nessus_xml",
+                                        "nexpose_simple",
+                                        "qualys_scan",
+                                    ],
+                                    "description": "Type of scan data",
+                                },
+                            },
+                            "required": ["data", "data_type"],
+                        },
+                    )
+                )
 
             # Job management tools
-            tools.append(Tool(
-                name="msf_jobs",
-                description="List or manage background jobs",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": ["list", "info", "stop"],
-                            "description": "Action to perform",
+            tools.append(
+                Tool(
+                    name="msf_jobs",
+                    description="List or manage background jobs",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "action": {
+                                "type": "string",
+                                "enum": ["list", "info", "stop"],
+                                "description": "Action to perform",
+                            },
+                            "job_id": {
+                                "type": "string",
+                                "description": "Job ID (for info/stop)",
+                            },
                         },
-                        "job_id": {
-                            "type": "string",
-                            "description": "Job ID (for info/stop)",
-                        },
+                        "required": ["action"],
                     },
-                    "required": ["action"],
-                },
-            ))
+                )
+            )
 
             # Console tools
-            tools.append(Tool(
-                name="msf_console",
-                description="Interact with Metasploit console",
-                inputSchema={
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": ["create", "list", "destroy", "read", "write"],
-                            "description": "Console action",
+            tools.append(
+                Tool(
+                    name="msf_console",
+                    description="Interact with Metasploit console",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "action": {
+                                "type": "string",
+                                "enum": ["create", "list", "destroy", "read", "write"],
+                                "description": "Console action",
+                            },
+                            "console_id": {
+                                "type": "string",
+                                "description": "Console ID (for destroy/read/write)",
+                            },
+                            "data": {
+                                "type": "string",
+                                "description": "Data to write (for write action)",
+                            },
                         },
-                        "console_id": {
-                            "type": "string",
-                            "description": "Console ID (for destroy/read/write)",
-                        },
-                        "data": {
-                            "type": "string",
-                            "description": "Data to write (for write action)",
-                        },
+                        "required": ["action"],
                     },
-                    "required": ["action"],
-                },
-            ))
+                )
+            )
 
             return tools
 
         @self.server.call_tool()
-        async def call_tool(name: str, arguments: dict[str, Any]) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
+        async def call_tool(
+            name: str, arguments: dict[str, Any]
+        ) -> Sequence[TextContent | ImageContent | EmbeddedResource]:
             """Handle tool calls."""
             self._audit("tool_call", {"tool": name, "arguments": arguments})
 
@@ -764,7 +847,7 @@ Use the following tools in sequence:
 - msf_hosts and msf_services to review findings
 - msf_vulns to check for known vulnerabilities
 
-Ensure all actions are authorized and within scope."""
+Ensure all actions are authorized and within scope.""",
                             ),
                         ),
                     ],
@@ -794,7 +877,7 @@ Steps:
 4. Generate a report of findings
 
 Important: Only use msf_check for vulnerability verification, not msf_execute.
-All testing must be authorized."""
+All testing must be authorized.""",
                             ),
                         ),
                     ],
@@ -829,7 +912,7 @@ All testing must be authorized."""
    - Use msf_execute with appropriate options
 
 IMPORTANT: Ensure you have explicit authorization before exploitation.
-Document all actions for audit purposes."""
+Document all actions for audit purposes.""",
                             ),
                         ),
                     ],
@@ -867,7 +950,7 @@ Document all actions for audit purposes."""
 5. Document all findings using database tools
 
 IMPORTANT: All post-exploitation must be within authorized scope.
-Maintain operational security and document everything."""
+Maintain operational security and document everything.""",
                             ),
                         ),
                     ],
@@ -931,7 +1014,11 @@ Maintain operational security and document everything."""
         # Exploit execution
         elif name == "msf_check":
             if self.settings.dry_run_mode:
-                return {"dry_run": True, "message": "Check would be executed", "arguments": arguments}
+                return {
+                    "dry_run": True,
+                    "message": "Check would be executed",
+                    "arguments": arguments,
+                }
             return await self.client.check_module(
                 arguments["module_type"],
                 arguments["module_name"],
@@ -940,11 +1027,18 @@ Maintain operational security and document everything."""
 
         elif name == "msf_execute":
             if self.settings.dry_run_mode:
-                return {"dry_run": True, "message": "Execution skipped in dry-run mode", "arguments": arguments}
+                return {
+                    "dry_run": True,
+                    "message": "Execution skipped in dry-run mode",
+                    "arguments": arguments,
+                }
 
             module_name = arguments["module_name"]
             if not self.settings.is_module_allowed(module_name):
-                return {"error": True, "message": f"Module {module_name} is blocked by configuration"}
+                return {
+                    "error": True,
+                    "message": f"Module {module_name} is blocked by configuration",
+                }
 
             return await self.client.execute_module(
                 arguments["module_type"],

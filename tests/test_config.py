@@ -1,6 +1,5 @@
 """Tests for configuration module."""
 
-import os
 import pytest
 from pydantic import SecretStr
 
@@ -55,7 +54,7 @@ class TestSettings:
 
     def test_module_blacklist(self):
         """Test module blacklist."""
-        settings = Settings(blocked_modules=["exploit/multi/handler", "auxiliary/dos"])
+        settings = Settings(blocked_modules="exploit/multi/handler,auxiliary/dos")
 
         assert settings.is_module_allowed("exploit/windows/smb/ms17_010_eternalblue")
         assert not settings.is_module_allowed("exploit/multi/handler")
@@ -63,7 +62,7 @@ class TestSettings:
 
     def test_module_whitelist(self):
         """Test module whitelist."""
-        settings = Settings(allowed_modules=["auxiliary/scanner", "exploit/windows"])
+        settings = Settings(allowed_modules="auxiliary/scanner,exploit/windows")
 
         assert settings.is_module_allowed("auxiliary/scanner/ssh/ssh_version")
         assert settings.is_module_allowed("exploit/windows/smb/ms17_010_eternalblue")
@@ -76,8 +75,8 @@ class TestSettings:
 
         settings = Settings()
 
-        assert "exploit/multi/handler" in settings.blocked_modules
-        assert "auxiliary/dos" in settings.blocked_modules
+        assert "exploit/multi/handler" in settings._blocked_modules_list
+        assert "auxiliary/dos" in settings._blocked_modules_list
         assert not settings.is_module_allowed("exploit/multi/handler")
 
     def test_rate_limit_settings(self):

@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 class MsfRpcMethod(str, Enum):
     """Metasploit RPC API methods."""
+
     # Authentication
     AUTH_LOGIN = "auth.login"
     AUTH_LOGOUT = "auth.logout"
@@ -155,22 +156,26 @@ class MsfRpcError(Exception):
 
 class MsfAuthError(MsfRpcError):
     """Authentication error."""
+
     pass
 
 
 class MsfConnectionError(MsfRpcError):
     """Connection error."""
+
     pass
 
 
 class MsfModuleError(MsfRpcError):
     """Module execution error."""
+
     pass
 
 
 @dataclass
 class MsfSession:
     """Represents an active Metasploit session."""
+
     id: int
     type: str
     tunnel_local: str
@@ -219,6 +224,7 @@ class MsfSession:
 @dataclass
 class MsfModule:
     """Represents a Metasploit module."""
+
     type: str
     name: str
     fullname: str
@@ -787,7 +793,9 @@ class MsfRpcClient:
     # Plugin Methods
     # ==========================================================================
 
-    async def load_plugin(self, plugin_name: str, options: dict[str, Any] | None = None) -> dict[str, Any]:
+    async def load_plugin(
+        self, plugin_name: str, options: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """Load a plugin."""
         return await self._call(MsfRpcMethod.PLUGIN_LOAD, plugin_name, options or {})
 

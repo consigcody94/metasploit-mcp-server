@@ -47,7 +47,9 @@ def setup_logging(level: LogLevel, log_file: Optional[str] = None) -> None:
 def print_banner() -> None:
     """Print the startup banner."""
     banner = Text()
-    banner.append("╔══════════════════════════════════════════════════════════════╗\n", style="bright_red")
+    banner.append(
+        "╔══════════════════════════════════════════════════════════════╗\n", style="bright_red"
+    )
     banner.append("║", style="bright_red")
     banner.append("      __  __      _                  _       _ _   ", style="red")
     banner.append("║\n", style="bright_red")
@@ -67,24 +69,40 @@ def print_banner() -> None:
     banner.append("                              |_|                  ", style="red")
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append("            __  __  ____ ____    ____                      ", style="bright_cyan")
+    banner.append(
+        "            __  __  ____ ____    ____                      ", style="bright_cyan"
+    )
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append("           |  \\/  |/ ___|  _ \\  / ___|  ___ _ ____   _____ _ __ ", style="bright_cyan")
+    banner.append(
+        "           |  \\/  |/ ___|  _ \\  / ___|  ___ _ ____   _____ _ __ ", style="bright_cyan"
+    )
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append("           | |\\/| | |   | |_) | \\___ \\ / _ \\ '__\\ \\ / / _ \\ '__|", style="bright_cyan")
+    banner.append(
+        "           | |\\/| | |   | |_) | \\___ \\ / _ \\ '__\\ \\ / / _ \\ '__|",
+        style="bright_cyan",
+    )
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append("           | |  | | |___|  __/   ___) |  __/ |   \\ V /  __/ |   ", style="bright_cyan")
+    banner.append(
+        "           | |  | | |___|  __/   ___) |  __/ |   \\ V /  __/ |   ", style="bright_cyan"
+    )
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append("           |_|  |_|\\____|_|     |____/ \\___|_|    \\_/ \\___|_|   ", style="bright_cyan")
+    banner.append(
+        "           |_|  |_|\\____|_|     |____/ \\___|_|    \\_/ \\___|_|   ", style="bright_cyan"
+    )
     banner.append("║\n", style="bright_red")
     banner.append("║", style="bright_red")
-    banner.append(f"                                                v{__version__}".ljust(60), style="bright_yellow")
+    banner.append(
+        f"                                                v{__version__}".ljust(60),
+        style="bright_yellow",
+    )
     banner.append("║\n", style="bright_red")
-    banner.append("╚══════════════════════════════════════════════════════════════╝", style="bright_red")
+    banner.append(
+        "╚══════════════════════════════════════════════════════════════╝", style="bright_red"
+    )
 
     console.print(banner)
     console.print()
@@ -94,19 +112,22 @@ def print_banner() -> None:
 def serve(
     host: str = typer.Option(
         "127.0.0.1",
-        "--host", "-h",
+        "--host",
+        "-h",
         help="Metasploit RPC host",
         envvar="METASPLOIT_MCP_MSF_HOST",
     ),
     port: int = typer.Option(
         55553,
-        "--port", "-p",
+        "--port",
+        "-p",
         help="Metasploit RPC port",
         envvar="METASPLOIT_MCP_MSF_PORT",
     ),
     password: str = typer.Option(
         ...,
-        "--password", "-P",
+        "--password",
+        "-P",
         help="Metasploit RPC password",
         envvar="METASPLOIT_MCP_MSF_PASSWORD",
         prompt=True,
@@ -114,7 +135,8 @@ def serve(
     ),
     username: str = typer.Option(
         "msf",
-        "--username", "-u",
+        "--username",
+        "-u",
         help="Metasploit RPC username",
         envvar="METASPLOIT_MCP_MSF_USERNAME",
     ),
@@ -132,7 +154,8 @@ def serve(
     ),
     log_level: LogLevel = typer.Option(
         LogLevel.INFO,
-        "--log-level", "-l",
+        "--log-level",
+        "-l",
         help="Logging level",
         envvar="METASPLOIT_MCP_LOG_LEVEL",
     ),
@@ -173,15 +196,17 @@ def serve(
         dry_run_mode=dry_run,
     )
 
-    console.print(Panel(
-        f"[bright_green]Starting MCP Server[/]\n\n"
-        f"[cyan]MSF Host:[/] {settings.msf_host}:{settings.msf_port}\n"
-        f"[cyan]SSL:[/] {'Enabled' if settings.msf_ssl else 'Disabled'}\n"
-        f"[cyan]Dry Run:[/] {'Enabled' if settings.dry_run_mode else 'Disabled'}\n"
-        f"[cyan]Log Level:[/] {settings.log_level.value}",
-        title="[bright_red]Metasploit MCP Server[/]",
-        border_style="bright_red",
-    ))
+    console.print(
+        Panel(
+            f"[bright_green]Starting MCP Server[/]\n\n"
+            f"[cyan]MSF Host:[/] {settings.msf_host}:{settings.msf_port}\n"
+            f"[cyan]SSL:[/] {'Enabled' if settings.msf_ssl else 'Disabled'}\n"
+            f"[cyan]Dry Run:[/] {'Enabled' if settings.dry_run_mode else 'Disabled'}\n"
+            f"[cyan]Log Level:[/] {settings.log_level.value}",
+            title="[bright_red]Metasploit MCP Server[/]",
+            border_style="bright_red",
+        )
+    )
 
     try:
         server = MetasploitMCPServer(settings)
@@ -212,7 +237,9 @@ def config() -> None:
     table.add_row("MSF Port", str(settings.msf_port))
     table.add_row("MSF SSL", "Yes" if settings.msf_ssl else "No")
     table.add_row("MSF Username", settings.msf_username)
-    table.add_row("MSF Password", "***" if settings.msf_password.get_secret_value() else "(not set)")
+    table.add_row(
+        "MSF Password", "***" if settings.msf_password.get_secret_value() else "(not set)"
+    )
     table.add_row("Log Level", settings.log_level.value)
     table.add_row("Dry Run Mode", "Yes" if settings.dry_run_mode else "No")
     table.add_row("Audit Logging", "Yes" if settings.audit_logging else "No")
