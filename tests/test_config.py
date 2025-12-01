@@ -1,9 +1,8 @@
 """Tests for configuration module."""
 
-import pytest
 from pydantic import SecretStr
 
-from metasploit_mcp.config import Settings, LogLevel, AuthMode
+from metasploit_mcp.config import AuthMode, LogLevel, Settings
 
 
 class TestSettings:

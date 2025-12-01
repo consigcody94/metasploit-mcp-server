@@ -10,11 +10,11 @@ from __future__ import annotations
 import asyncio
 import logging
 import ssl
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from collections.abc import AsyncGenerator
 from typing import Any
 
 import httpx

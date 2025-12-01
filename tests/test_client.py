@@ -1,15 +1,16 @@
 """Tests for Metasploit RPC client."""
 
+from unittest.mock import AsyncMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
 from metasploit_mcp.client import (
-    MsfRpcClient,
-    MsfRpcError,
     MsfAuthError,
     MsfConnectionError,
-    MsfSession,
+    MsfRpcClient,
+    MsfRpcError,
     MsfRpcMethod,
+    MsfSession,
 )
 from metasploit_mcp.config import Settings
 

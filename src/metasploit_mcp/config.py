@@ -8,7 +8,6 @@ and sensible defaults for penetration testing environments.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -59,7 +58,7 @@ class Settings(BaseSettings):
     )
     msf_username: str = Field(default="msf", description="Metasploit RPC username")
     msf_password: SecretStr = Field(default=SecretStr(""), description="Metasploit RPC password")
-    msf_token: Optional[str] = Field(
+    msf_token: str | None = Field(
         default=None, description="Pre-existing authentication token (optional)"
     )
     msf_uri: str = Field(default="/api/", description="Metasploit RPC API URI path")
@@ -97,10 +96,10 @@ class Settings(BaseSettings):
     auth_mode: AuthMode = Field(
         default=AuthMode.NONE, description="Authentication mode for MCP clients"
     )
-    auth_token: Optional[SecretStr] = Field(
+    auth_token: SecretStr | None = Field(
         default=None, description="Authentication token for MCP clients (if auth_mode=token)"
     )
-    allowed_modules: Optional[str] = Field(
+    allowed_modules: str | None = Field(
         default=None,
         description="Whitelist of allowed Metasploit modules (comma-separated, None = all allowed)",
     )
@@ -120,7 +119,7 @@ class Settings(BaseSettings):
 
     # Logging Settings
     log_level: LogLevel = Field(default=LogLevel.INFO, description="Logging level")
-    log_file: Optional[str] = Field(default=None, description="Log file path (None = stdout only)")
+    log_file: str | None = Field(default=None, description="Log file path (None = stdout only)")
     log_json: bool = Field(default=False, description="Output logs in JSON format")
 
     # Feature Flags
@@ -151,7 +150,7 @@ class Settings(BaseSettings):
         return SecretStr(v) if v else SecretStr("")
 
     @model_validator(mode="after")
-    def parse_module_lists(self) -> "Settings":
+    def parse_module_lists(self) -> Settings:
         """Parse comma-separated module lists after initialization."""
         if self.blocked_modules:
             self._blocked_modules_list = [

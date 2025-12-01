@@ -10,30 +10,26 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from collections.abc import Sequence
 from datetime import datetime
-from typing import Any, Sequence
+from typing import Any
 
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import (
-    CallToolResult,
     EmbeddedResource,
     GetPromptResult,
     ImageContent,
-    ListPromptsResult,
-    ListResourcesResult,
-    ListToolsResult,
     Prompt,
     PromptArgument,
     PromptMessage,
-    ReadResourceResult,
     Resource,
     TextContent,
     Tool,
 )
 from pydantic import AnyUrl
 
-from metasploit_mcp.client import MsfRpcClient, MsfRpcError, MsfSession
+from metasploit_mcp.client import MsfRpcClient, MsfRpcError
 from metasploit_mcp.config import Settings, get_settings
 
 logger = logging.getLogger(__name__)
