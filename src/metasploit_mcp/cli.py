@@ -9,7 +9,6 @@ from __future__ import annotations
 import asyncio
 import logging
 import sys
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -30,7 +29,7 @@ app = typer.Typer(
 console = Console()
 
 
-def setup_logging(level: LogLevel, log_file: Optional[str] = None) -> None:
+def setup_logging(level: LogLevel, log_file: str | None = None) -> None:
     """Configure logging."""
     handlers = [logging.StreamHandler(sys.stderr)]
 
@@ -159,7 +158,7 @@ def serve(
         help="Logging level",
         envvar="METASPLOIT_MCP_LOG_LEVEL",
     ),
-    log_file: Optional[str] = typer.Option(
+    log_file: str | None = typer.Option(
         None,
         "--log-file",
         help="Log file path",

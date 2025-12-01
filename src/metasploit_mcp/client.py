@@ -14,7 +14,8 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, AsyncGenerator, Optional
+from collections.abc import AsyncGenerator
+from typing import Any
 
 import httpx
 import msgpack
@@ -338,7 +339,7 @@ class MsfRpcClient:
         self,
         client: httpx.AsyncClient,
         payload: bytes,
-        method: str,
+        _method: str,
         retry: bool,
     ) -> dict[str, Any]:
         """Execute HTTP request with retry logic."""
@@ -356,14 +357,13 @@ class MsfRpcClient:
                 result = msgpack.unpackb(response.content, raw=False)
 
                 # Check for RPC errors
-                if isinstance(result, dict):
-                    if "error" in result:
-                        error_msg = result.get("error_message", str(result["error"]))
-                        error_code = result.get("error_code", 0)
+                if isinstance(result, dict) and "error" in result:
+                    error_msg = result.get("error_message", str(result["error"]))
+                    error_code = result.get("error_code", 0)
 
-                        if "authentication" in error_msg.lower() or error_code == 401:
-                            raise MsfAuthError(error_msg, error_code)
-                        raise MsfRpcError(error_msg, error_code, result)
+                    if "authentication" in error_msg.lower() or error_code == 401:
+                        raise MsfAuthError(error_msg, error_code)
+                    raise MsfRpcError(error_msg, error_code, result)
 
                 return result if isinstance(result, dict) else {"result": result}
 
