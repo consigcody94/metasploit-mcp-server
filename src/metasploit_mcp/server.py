@@ -742,7 +742,7 @@ class MetasploitMCPServer:
                 result = await self.client.list_payloads()
             elif uri_str == "msf://sessions":
                 sessions = await self.client.list_sessions()
-                result = {k: v.__dict__ for k, v in sessions.items()}
+                result = {str(k): v.__dict__ for k, v in sessions.items()}
             elif uri_str == "msf://jobs":
                 result = await self.client.list_jobs()
             elif uri_str == "msf://db/hosts":
@@ -1045,7 +1045,7 @@ Maintain operational security and document everything.""",
         # Session management
         elif name == "msf_sessions_list":
             sessions = await self.client.list_sessions()
-            return {k: v.__dict__ for k, v in sessions.items()}
+            return {str(k): v.__dict__ for k, v in sessions.items()}
 
         elif name == "msf_session_info":
             sessions = await self.client.list_sessions()
