@@ -626,7 +626,7 @@ class MsfRpcClient:
     # Session Methods
     # ==========================================================================
 
-    async def list_sessions(self) -> dict[str, MsfSession]:
+    async def list_sessions(self) -> dict[int, MsfSession]:
         """List all active sessions."""
         result = await self._call(MsfRpcMethod.SESSION_LIST)
         sessions = {}

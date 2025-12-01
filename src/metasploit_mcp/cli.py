@@ -31,7 +31,7 @@ console = Console()
 
 def setup_logging(level: LogLevel, log_file: str | None = None) -> None:
     """Configure logging."""
-    handlers = [logging.StreamHandler(sys.stderr)]
+    handlers: list[logging.Handler] = [logging.StreamHandler(sys.stderr)]
 
     if log_file:
         handlers.append(logging.FileHandler(log_file))
